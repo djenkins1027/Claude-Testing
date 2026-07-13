@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-13T19:34:29+00:00",
+  "generated_at": "2026-07-13T19:46:32+00:00",
   "entities": [
     {
       "entity": "pcl",
@@ -27,13 +27,18 @@
     },
     {
       "entity": "stillwater",
-      "project_count": 1,
-      "document_count": 3,
+      "project_count": 2,
+      "document_count": 4,
       "projects": [
         {
           "project_number": "SW-2026-001",
           "project_name": "Hendricks kitchen remodel",
           "document_count": 3
+        },
+        {
+          "project_number": "SW-HR-07-2026",
+          "project_name": "CAD/Layout Engineer pay progression & KRAs",
+          "document_count": 1
         }
       ]
     },

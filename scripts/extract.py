@@ -26,7 +26,7 @@ def extract_docx(path: Path) -> str:
         text = para.text.strip()
         if not text:
             continue
-        style = (para.style.name or "").lower()
+        style = (para.style.name if para.style and para.style.name else "").lower()
         if style.startswith("heading"):
             try:
                 level = int(style.split()[-1])

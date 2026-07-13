@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-13T19:34:29+00:00",
-  "document_count": 10,
+  "generated_at": "2026-07-13T19:46:32+00:00",
+  "document_count": 11,
   "documents": [
     {
       "id": 4,
@@ -106,6 +106,21 @@
       "added_date": "2026-07-13T19:18:55+00:00",
       "modified_date": "2026-07-13T19:18:55+00:00",
       "sha256": "23034a92de67f1527b420678c3eecf2dd1644e2b8b9496ad6866e14ade601101"
+    },
+    {
+      "id": 11,
+      "entity": "stillwater",
+      "project_number": "SW-HR-07-2026",
+      "project_name": "CAD/Layout Engineer pay progression & KRAs",
+      "filename": "SW-HR-07-2026_CAD_Engineer_Pay_Progression_KRA.docx",
+      "file_type": "docx",
+      "file_path": "files/stillwater/SW-HR-07-2026/SW-HR-07-2026_CAD_Engineer_Pay_Progression_KRA.docx",
+      "extracted_path": "extracted/stillwater/SW-HR-07-2026/SW-HR-07-2026_CAD_Engineer_Pay_Progression_KRA.docx.md",
+      "description": "Pay progression plan and Key Result Areas for the CAD/Layout Engineer role; incumbent Stephen",
+      "tags": "hr,pay-progression,kra",
+      "added_date": "2026-07-13T19:46:31+00:00",
+      "modified_date": "2026-07-13T19:46:31+00:00",
+      "sha256": "d15105664aed9deff315bef4fc9068951e948e99eca11e41f31f5630df114e6b"
     },
     {
       "id": 9,
