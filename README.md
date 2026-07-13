@@ -32,6 +32,7 @@ Because chat-Claude cannot open a SQLite file or run `query.py`, the repo keeps
 /extracted/{entity}/{project_number}/
     {filename}.md                                     text of each docx/pdf, as markdown
     {filename}__{sheet}.csv                           one csv per sheet of each xlsx
+/inbox/{entity}/                                      drop zone for GitHub-website uploads (auto-ingested)
 /db/index.db                                          SQLite index (source of truth)
 /index/documents.json                                 full export of the documents table
 /index/entities.json                                  entity + project rollup counts
@@ -40,6 +41,8 @@ Because chat-Claude cannot open a SQLite file or run `query.py`, the repo keeps
 /scripts/export.py                                    regenerate /index/*.json (auto-run by ingest)
 /scripts/extract.py                                   docx/pdf -> md, xlsx -> csv helpers
 /scripts/dbschema.py                                  shared schema/connection; run standalone to init the db
+/scripts/process_inbox.py                             files /inbox uploads (run by the auto-ingest Action)
+/.github/workflows/ingest-inbox.yml                   auto-ingest Action for /inbox uploads
 ```
 
 > Note: `/documents`, `/webapp`, and the other `/scripts/*.py` files not listed
@@ -75,6 +78,22 @@ Re-ingesting a file whose content hasn't changed (matched by sha256) is a
 no-op on the file layer — only metadata (description/tags/modified date) is
 updated. Re-ingesting changed content overwrites the stored file and its
 extractions in place.
+
+## Adding documents from the GitHub website (no tools needed)
+
+Upload files straight from a browser — no git, no Python:
+
+1. On github.com, open `inbox/` and click into the entity's folder.
+2. **Add file → Upload files**, drag the document in, commit.
+3. Name the file starting with the project number plus an underscore
+   (e.g. `SW-2026-001_shop_notes.docx`), or upload into an existing
+   `inbox/{entity}/{project_number}/` folder.
+
+The auto-ingest Action (`.github/workflows/ingest-inbox.yml`) files it within
+a couple of minutes: original to `/files/`, extracted text to `/extracted/`,
+index updated, inbox copy removed. Files it can't place stay in the inbox and
+get flagged in a GitHub issue titled "Inbox upload needs attention". See
+`inbox/README.md` for details.
 
 ## Querying (Claude Code)
 

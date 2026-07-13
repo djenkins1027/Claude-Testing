@@ -1,0 +1,61 @@
+name: Auto-ingest inbox uploads
+
+on:
+  push:
+    branches: [main]
+    paths: ['inbox/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: inbox-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install python-docx openpyxl pypdf
+
+      - name: Process inbox
+        env:
+          PROBLEMS_FILE: ${{ runner.temp }}/inbox_problems.md
+        run: python scripts/process_inbox.py
+
+      - name: Commit and push results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -m "auto-ingest: process inbox uploads"
+            git push
+          fi
+
+      - name: Open an issue for files that couldn't be filed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PROBLEMS="${{ runner.temp }}/inbox_problems.md"
+          if [ -s "$PROBLEMS" ]; then
+            OPEN=$(gh issue list --state open --json title \
+              --jq '[.[] | select(.title == "Inbox upload needs attention")] | length')
+            if [ "$OPEN" = "0" ]; then
+              gh issue create --title "Inbox upload needs attention" --body-file "$PROBLEMS"
+            else
+              echo "an 'Inbox upload needs attention' issue is already open; skipping"
+            fi
+          fi
