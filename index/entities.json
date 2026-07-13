@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-07-13T19:20:15+00:00",
+  "entities": [
+    {
+      "entity": "pcl",
+      "project_count": 1,
+      "document_count": 2,
+      "projects": [
+        {
+          "project_number": "PCL-2026-014",
+          "project_name": "Driver program",
+          "document_count": 2
+        }
+      ]
+    },
+    {
+      "entity": "riverwalk",
+      "project_count": 1,
+      "document_count": 2,
+      "projects": [
+        {
+          "project_number": "RW-2026-003",
+          "project_name": "Suite 210 lease",
+          "document_count": 2
+        }
+      ]
+    },
+    {
+      "entity": "stillwater",
+      "project_count": 1,
+      "document_count": 3,
+      "projects": [
+        {
+          "project_number": "SW-2026-001",
+          "project_name": "Hendricks kitchen remodel",
+          "document_count": 3
+        }
+      ]
+    },
+    {
+      "entity": "vault",
+      "project_count": 1,
+      "document_count": 2,
+      "projects": [
+        {
+          "project_number": "VLT-2026-007",
+          "project_name": "Meyers wedding",
+          "document_count": 2
+        }
+      ]
+    }
+  ]
+}

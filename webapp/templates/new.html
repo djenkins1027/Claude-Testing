@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}New document{% endblock %}
+{% block content %}
+  <h1>New document</h1>
+  <form method="post">
+    <label for="category">Category</label>
+    <select name="category" id="category">
+      {% for category in categories %}
+        <option value="{{ category }}">{{ category }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="file_type">Type</label>
+    <select name="file_type" id="file_type">
+      <option value="docx">Word (docx)</option>
+      <option value="xlsx">Excel (xlsx)</option>
+      <option value="pdf">PDF</option>
+    </select>
+
+    <label for="name">Filename (without extension)</label>
+    <input type="text" name="name" id="name" required>
+
+    <label for="content">Content</label>
+    <div class="note">For Excel, use comma-separated rows, one per line. For Word/PDF, plain text, one paragraph/line per line.</div>
+    <textarea name="content" id="content" rows="15"></textarea>
+
+    <button type="submit">Create</button>
+  </form>
+{% endblock %}

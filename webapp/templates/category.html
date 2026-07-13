@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ category }}{% endblock %}
+{% block content %}
+  <h1>{{ category }}</h1>
+  <table>
+    <tr><th>Filename</th><th>Type</th><th>Updated</th><th></th></tr>
+    {% for doc in docs %}
+      <tr>
+        <td>{{ doc.filename }}</td>
+        <td>{{ doc.file_type }}</td>
+        <td>{{ doc.updated_at }}</td>
+        <td>
+          <a href="{{ url_for('edit_doc', doc_id=doc.id) }}">Open / Edit</a> ·
+          <a href="{{ url_for('download_doc', doc_id=doc.id) }}">Download</a>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4">No documents yet.</td></tr>
+    {% endfor %}
+  </table>
+  <p><a href="{{ url_for('new_doc') }}">+ New document</a></p>
+{% endblock %}

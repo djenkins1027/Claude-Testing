@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ doc.filename }}{% endblock %}
+{% block content %}
+  <h1>{{ doc.category }} / {{ doc.filename }}</h1>
+
+  {% if doc.file_type == "xlsx" %}
+    <div class="note">Rows are comma-separated, one row per line (CSV). First row is the header.</div>
+  {% elif doc.file_type == "pdf" %}
+    <div class="note">PDFs are plain text here. Saving regenerates the file from this text, so any original layout/formatting is not preserved.</div>
+  {% endif %}
+
+  <form method="post">
+    <textarea name="content" rows="20">{{ content_text }}</textarea>
+    <div class="actions">
+      <button type="submit">Save</button>
+      <a href="{{ url_for('category_view', category=doc.category) }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}
