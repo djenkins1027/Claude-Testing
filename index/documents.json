@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-13T19:20:15+00:00",
-  "document_count": 9,
+  "generated_at": "2026-07-13T19:34:29+00:00",
+  "document_count": 10,
   "documents": [
     {
       "id": 4,
@@ -136,6 +136,21 @@
       "added_date": "2026-07-13T19:18:56+00:00",
       "modified_date": "2026-07-13T19:18:56+00:00",
       "sha256": "9a85caf8bf39517d06d2114f15d695abd05777dfc5063304025354e40476ff9e"
+    },
+    {
+      "id": 10,
+      "entity": "vault",
+      "project_number": "VLT-2026-008",
+      "project_name": null,
+      "filename": "VLT-2026-008_bar_inventory.xlsx",
+      "file_type": "xlsx",
+      "file_path": "files/vault/VLT-2026-008/VLT-2026-008_bar_inventory.xlsx",
+      "extracted_path": "extracted/vault/VLT-2026-008/VLT-2026-008_bar_inventory.xlsx__Inventory.csv",
+      "description": null,
+      "tags": null,
+      "added_date": "2026-07-13T19:34:29+00:00",
+      "modified_date": "2026-07-13T19:34:29+00:00",
+      "sha256": "ec4acefc84b269c083a70e3d2d1ea5e541c7fa20d261e39342e7033dd95deb32"
     }
   ]
 }
