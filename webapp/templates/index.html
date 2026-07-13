@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Documents{% endblock %}
+{% block content %}
+  <h1>Documents</h1>
+  <ul>
+    {% for category in categories %}
+      <li><a href="{{ url_for('category_view', category=category) }}">{{ category }}</a>
+        ({{ counts.get(category, 0) }} document{{ 's' if counts.get(category, 0) != 1 else '' }})</li>
+    {% endfor %}
+  </ul>
+  <p><a href="{{ url_for('new_doc') }}">+ New document</a></p>
+{% endblock %}
