@@ -7,6 +7,8 @@
   <div class="note">Saving creates v{{ doc.version + 1 }} and moves the current file to the archive folder — it doesn't overwrite it.</div>
   {% if doc.file_type == "xlsx" %}
     <div class="note">Rows are comma-separated, one row per line (CSV). First row is the header.</div>
+  {% elif doc.file_type == "docx" %}
+    <div class="note">Start a line with "# " for a heading, "## " for a subheading, or "- " for a bullet. Plain lines stay as normal paragraphs.</div>
   {% elif doc.file_type == "pdf" %}
     <div class="note">PDFs are plain text here. Saving regenerates the file from this text, so any original layout/formatting is not preserved.</div>
   {% endif %}

@@ -12,7 +12,9 @@ _UNSAFE_CHARS = re.compile(r'[<>:"/\\|?*]')
 
 def slugify(short_title: str) -> str:
     cleaned = _UNSAFE_CHARS.sub("", short_title).strip()
-    return re.sub(r"\s+", "-", cleaned)
+    slug = re.sub(r"\s+", "-", cleaned)
+    slug = re.sub(r"-+", "-", slug)
+    return slug.strip("-")
 
 
 def build_filename(category: str, doc_type: str, short_title: str, version: int, file_type: str) -> str:

@@ -1,6 +1,7 @@
 import io
 
 from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from openpyxl import Workbook
@@ -25,7 +26,16 @@ def _add_field(paragraph, field_code):
 def build_docx(text: str, footer_stamp: str | None = None) -> bytes:
     doc = Document()
     for line in text.splitlines() or [""]:
-        doc.add_paragraph(line)
+        if line.startswith("## "):
+            heading = doc.add_heading(line[3:], level=2)
+            heading.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        elif line.startswith("# "):
+            heading = doc.add_heading(line[2:], level=1)
+            heading.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        elif line.startswith("- "):
+            doc.add_paragraph(line[2:], style="List Bullet")
+        else:
+            doc.add_paragraph(line)
 
     if footer_stamp:
         footer_paragraph = doc.sections[0].footer.paragraphs[0]

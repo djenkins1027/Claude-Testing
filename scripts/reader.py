@@ -7,7 +7,18 @@ from pypdf import PdfReader
 
 def read_docx(content: bytes) -> str:
     doc = Document(io.BytesIO(content))
-    return "\n".join(p.text for p in doc.paragraphs)
+    lines = []
+    for p in doc.paragraphs:
+        style = p.style.name if p.style else "Normal"
+        if style == "Heading 1":
+            lines.append(f"# {p.text}")
+        elif style == "Heading 2":
+            lines.append(f"## {p.text}")
+        elif style == "List Bullet":
+            lines.append(f"- {p.text}")
+        else:
+            lines.append(p.text)
+    return "\n".join(lines)
 
 
 def read_xlsx(content: bytes) -> list[list]:
