@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Version history{% endblock %}
+{% block content %}
+  <h1>{{ current.category }} / {{ current.short_title }}</h1>
+  <p>{{ current.doc_type }}</p>
+  <table>
+    <tr><th>Version</th><th>Filename</th><th>Saved</th><th></th></tr>
+    <tr>
+      <td>v{{ current.version }} (current)</td>
+      <td>{{ current.filename }}</td>
+      <td>{{ current.updated_at }}</td>
+      <td><a href="{{ url_for('download_doc', doc_id=current.id) }}">Download</a></td>
+    </tr>
+    {% for row in archived %}
+      <tr>
+        <td>v{{ row.version }} (archived)</td>
+        <td>{{ row.filename }}</td>
+        <td>{{ row.archived_at }}</td>
+        <td><a href="{{ url_for('download_archived', archive_id=row.id) }}">Download</a></td>
+      </tr>
+    {% endfor %}
+  </table>
+  <p><a href="{{ url_for('edit_doc', doc_id=current.id) }}">Back to edit</a></p>
+{% endblock %}

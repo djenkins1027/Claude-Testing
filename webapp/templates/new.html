@@ -2,6 +2,7 @@
 {% block title %}New document{% endblock %}
 {% block content %}
   <h1>New document</h1>
+  <div class="note">If a document already exists with the same category, doc type, and short title, saving here creates the next version and archives the current one — it doesn't overwrite.</div>
   <form method="post">
     <label for="category">Category</label>
     <select name="category" id="category">
@@ -10,15 +11,22 @@
       {% endfor %}
     </select>
 
-    <label for="file_type">Type</label>
+    <label for="doc_type">Doc Type</label>
+    <select name="doc_type" id="doc_type">
+      {% for doc_type in doc_types %}
+        <option value="{{ doc_type }}">{{ doc_type }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="short_title">Short Title</label>
+    <input type="text" name="short_title" id="short_title" required placeholder="e.g. Employee Handbook">
+
+    <label for="file_type">File Format</label>
     <select name="file_type" id="file_type">
       <option value="docx">Word (docx)</option>
       <option value="xlsx">Excel (xlsx)</option>
       <option value="pdf">PDF</option>
     </select>
-
-    <label for="name">Filename (without extension)</label>
-    <input type="text" name="name" id="name" required>
 
     <label for="content">Content</label>
     <div class="note">For Excel, use comma-separated rows, one per line. For Word/PDF, plain text, one paragraph/line per line.</div>

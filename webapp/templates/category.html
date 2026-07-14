@@ -3,19 +3,22 @@
 {% block content %}
   <h1>{{ category }}</h1>
   <table>
-    <tr><th>Filename</th><th>Type</th><th>Updated</th><th></th></tr>
+    <tr><th>Short Title</th><th>Doc Type</th><th>Version</th><th>Filename</th><th>Updated</th><th></th></tr>
     {% for doc in docs %}
       <tr>
+        <td>{{ doc.short_title }}</td>
+        <td>{{ doc.doc_type }}</td>
+        <td>v{{ doc.version }}</td>
         <td>{{ doc.filename }}</td>
-        <td>{{ doc.file_type }}</td>
         <td>{{ doc.updated_at }}</td>
         <td>
           <a href="{{ url_for('edit_doc', doc_id=doc.id) }}">Open / Edit</a> ·
-          <a href="{{ url_for('download_doc', doc_id=doc.id) }}">Download</a>
+          <a href="{{ url_for('download_doc', doc_id=doc.id) }}">Download</a> ·
+          <a href="{{ url_for('doc_versions', doc_id=doc.id) }}">History</a>
         </td>
       </tr>
     {% else %}
-      <tr><td colspan="4">No documents yet.</td></tr>
+      <tr><td colspan="6">No documents yet.</td></tr>
     {% endfor %}
   </table>
   <p><a href="{{ url_for('new_doc') }}">+ New document</a></p>

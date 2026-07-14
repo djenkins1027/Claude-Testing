@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Edit {{ doc.filename }}{% endblock %}
 {% block content %}
-  <h1>{{ doc.category }} / {{ doc.filename }}</h1>
+  <h1>{{ doc.category }} / {{ doc.short_title }}</h1>
+  <p>{{ doc.doc_type }} · currently v{{ doc.version }} · <a href="{{ url_for('doc_versions', doc_id=doc.id) }}">version history</a></p>
 
+  <div class="note">Saving creates v{{ doc.version + 1 }} and moves the current file to the archive folder — it doesn't overwrite it.</div>
   {% if doc.file_type == "xlsx" %}
     <div class="note">Rows are comma-separated, one row per line (CSV). First row is the header.</div>
   {% elif doc.file_type == "pdf" %}
@@ -12,7 +14,7 @@
   <form method="post">
     <textarea name="content" rows="20">{{ content_text }}</textarea>
     <div class="actions">
-      <button type="submit">Save</button>
+      <button type="submit">Save as v{{ doc.version + 1 }}</button>
       <a href="{{ url_for('category_view', category=doc.category) }}">Cancel</a>
     </div>
   </form>

@@ -10,11 +10,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-from db import CATEGORIES, REPO_ROOT, get_connection, init_db  # noqa: E402
+from db import CATEGORIES, DOC_TYPES, REPO_ROOT, get_connection, init_db  # noqa: E402
 from reader import read_docx, read_xlsx  # noqa: E402
-from writer import build_docx, build_pdf, build_xlsx  # noqa: E402
-
-DOCS_ROOT = REPO_ROOT / "documents"
+from versioning import save_new_version  # noqa: E402
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-only-change-me")
@@ -59,7 +57,8 @@ def category_view(category):
         return "Unknown category", 404
     conn = get_connection()
     docs = conn.execute(
-        "SELECT id, filename, file_type, updated_at FROM documents WHERE category = ? ORDER BY filename",
+        "SELECT id, doc_type, short_title, version, filename, file_type, updated_at "
+        "FROM documents WHERE category = ? ORDER BY doc_type, short_title",
         (category,),
     ).fetchall()
     conn.close()
@@ -70,29 +69,15 @@ def category_view(category):
 def edit_doc(doc_id):
     conn = get_connection()
     row = conn.execute("SELECT * FROM documents WHERE id = ?", (doc_id,)).fetchone()
+    conn.close()
 
     if row is None:
-        conn.close()
         return "Document not found", 404
 
     if request.method == "POST":
         content_text = request.form["content"]
-        if row["file_type"] == "docx":
-            content = build_docx(content_text)
-        elif row["file_type"] == "xlsx":
-            content = build_xlsx(csv_to_rows(content_text))
-        elif row["file_type"] == "pdf":
-            content = build_pdf(content_text)
-
-        file_path = REPO_ROOT / row["file_path"]
-        file_path.write_bytes(content)
-
-        conn.execute(
-            "UPDATE documents SET content = ?, updated_at = datetime('now') WHERE id = ?",
-            (content, doc_id),
-        )
-        conn.commit()
-        conn.close()
+        raw_content = csv_to_rows(content_text) if row["file_type"] == "xlsx" else content_text
+        save_new_version(row["category"], row["doc_type"], row["short_title"], row["file_type"], raw_content)
         return redirect(url_for("category_view", category=row["category"]))
 
     if row["file_type"] == "docx":
@@ -102,8 +87,22 @@ def edit_doc(doc_id):
     else:
         content_text = ""  # PDFs are regenerated from scratch; start blank if no source text is tracked
 
-    conn.close()
     return render_template("edit.html", doc=row, content_text=content_text)
+
+
+@app.route("/doc/<int:doc_id>/versions")
+def doc_versions(doc_id):
+    conn = get_connection()
+    current = conn.execute("SELECT * FROM documents WHERE id = ?", (doc_id,)).fetchone()
+    if current is None:
+        conn.close()
+        return "Document not found", 404
+    archived = conn.execute(
+        "SELECT * FROM document_archive WHERE original_id = ? ORDER BY version DESC",
+        (doc_id,),
+    ).fetchall()
+    conn.close()
+    return render_template("versions.html", current=current, archived=archived)
 
 
 @app.route("/doc/<int:doc_id>/download")
@@ -120,42 +119,34 @@ def download_doc(doc_id):
     )
 
 
+@app.route("/archive/<int:archive_id>/download")
+def download_archived(archive_id):
+    conn = get_connection()
+    row = conn.execute("SELECT * FROM document_archive WHERE id = ?", (archive_id,)).fetchone()
+    conn.close()
+    if row is None:
+        return "Archived version not found", 404
+    return send_file(
+        io.BytesIO(row["content"]),
+        as_attachment=True,
+        download_name=row["filename"],
+    )
+
+
 @app.route("/new", methods=["GET", "POST"])
 def new_doc():
     if request.method == "POST":
         category = request.form["category"]
+        doc_type = request.form["doc_type"]
+        short_title = request.form["short_title"]
         file_type = request.form["file_type"]
-        name = request.form["name"]
         content_text = request.form["content"]
 
-        if file_type == "docx":
-            content = build_docx(content_text)
-        elif file_type == "xlsx":
-            content = build_xlsx(csv_to_rows(content_text))
-        else:
-            content = build_pdf(content_text)
+        raw_content = csv_to_rows(content_text) if file_type == "xlsx" else content_text
+        row = save_new_version(category, doc_type, short_title, file_type, raw_content)
+        return redirect(url_for("category_view", category=row["category"]))
 
-        filename = f"{name}.{file_type}"
-        file_path = DOCS_ROOT / category / filename
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_path.write_bytes(content)
-
-        conn = get_connection()
-        conn.execute(
-            """
-            INSERT INTO documents (category, filename, file_type, file_path, content)
-            VALUES (?, ?, ?, ?, ?)
-            ON CONFLICT (category, filename) DO UPDATE SET
-                content = excluded.content,
-                updated_at = datetime('now')
-            """,
-            (category, filename, file_type, str(file_path.relative_to(REPO_ROOT)), content),
-        )
-        conn.commit()
-        conn.close()
-        return redirect(url_for("category_view", category=category))
-
-    return render_template("new.html", categories=CATEGORIES)
+    return render_template("new.html", categories=CATEGORIES, doc_types=DOC_TYPES)
 
 
 if __name__ == "__main__":
